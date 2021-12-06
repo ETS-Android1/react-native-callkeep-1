@@ -105,3 +105,39 @@ AppRegistry.registerHeadlessTask('RNCallKeepBackgroundMessage', () => ({ name, c
   return Promise.resolve();
 });
 ```
+
+3. To wake up device when screen is locked on android API >= 27:
+
+Modify `android/app/src/main/java/.../MainActivity.java`.
+
+```java
+import com.facebook.react.ReactActivity;
+import android.os.Bundle;
+import android.os.Build;                // add this
+import android.app.KeyguardManager;     // add this
+
+public class MainActivity extends ReactActivity {
+  ...
+
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    // add from here
+    Bundle extras = getIntent().getExtras();
+    if (extras != null && extras.containsKey("wakeUp")) {
+      wakeUp();
+    }
+    // to here
+  }
+
+  // add this method
+  private void wakeUp() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+      setShowWhenLocked(true);
+      setTurnScreenOn(true);
+      KeyguardManager keyguardManager = (KeyguardManager) getSystemService(getApplicationContext().KEYGUARD_SERVICE);
+      keyguardManager.requestDismissKeyguard(this, null);
+    }
+  }
+}
+```

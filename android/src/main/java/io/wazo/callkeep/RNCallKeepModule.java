@@ -19,6 +19,7 @@ package io.wazo.callkeep;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.KeyguardManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -52,6 +53,7 @@ import android.util.Log;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Dynamic;
 import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -117,6 +119,7 @@ public class RNCallKeepModule extends ReactContextBaseJavaModule {
     private ReadableMap _settings;
     private WritableNativeArray delayedEvents;
     private boolean hasListeners = false;
+    private WritableMap headlessExtras;
 
     public static RNCallKeepModule getInstance(ReactApplicationContext reactContext, boolean realContext) {
         if (instance == null) {
@@ -784,12 +787,21 @@ public class RNCallKeepModule extends ReactContextBaseJavaModule {
 
         if (isOpened) {
             focusIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+                activity.setShowWhenLocked(true);
+                activity.setTurnScreenOn(true);
+                KeyguardManager keyguardManager = (KeyguardManager) context.getSystemService(context.KEYGUARD_SERVICE);
+                keyguardManager.requestDismissKeyguard(activity, null);
+            }
             activity.startActivity(focusIntent);
         } else {
             focusIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK +
+                    WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON +
                     WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED +
                     WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD +
                     WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+                    
+            focusIntent.putExtra("wakeUp", true);
 
             getReactApplicationContext().startActivity(focusIntent);
         }
@@ -806,6 +818,96 @@ public class RNCallKeepModule extends ReactContextBaseJavaModule {
             permissionsIndex++;
         }
         hasPhoneAccountPromise.resolve(true);
+    }
+
+    @ReactMethod
+    public void openAppFromHeadlessMode(ReadableMap extras) {
+        Context context = getAppContext();
+        String packageName = context.getApplicationContext().getPackageName();
+        Intent focusIntent = context.getPackageManager().getLaunchIntentForPackage(packageName).cloneFilter();
+        Activity activity = getCurrentActivity();
+        boolean isOpened = activity != null;
+
+        if (isOpened) {
+            focusIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+                activity.setShowWhenLocked(true);
+                activity.setTurnScreenOn(true);
+                KeyguardManager keyguardManager = (KeyguardManager) context.getSystemService(context.KEYGUARD_SERVICE);
+                keyguardManager.requestDismissKeyguard(activity, null);
+            }
+            activity.startActivity(focusIntent);
+        } else {
+            focusIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                    WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
+                    WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
+                    WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
+                    WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+
+            final WritableMap response = new WritableNativeMap();
+            response.putBoolean("openedByHeadlessTask", true);
+            String callUUID = "";
+            String callerName = "";
+            String handle = "";
+            Boolean hasVideo = false;
+            if (extras != null){
+                if (extras.hasKey("callUUID")) {
+                    callUUID = extras.getString("callUUID");
+                }
+                if (extras.hasKey("callerName")) {
+                    response.putString("callerName", extras.getString("callerName"));
+                }
+                if (extras.hasKey("handle")) {
+                    response.putString("handle", extras.getString("handle"));
+                }
+                if (extras.hasKey("hasVideo")) {
+                    response.putBoolean("hasVideo", extras.getBoolean("hasVideo"));
+                }
+                if (extras.hasKey("data")) {
+                    response.putMap("data", extras.getMap("data"));
+                }
+            }
+            response.putString("callUUID", callUUID);
+
+            this.headlessExtras = response;
+
+            focusIntent.putExtra("wakeUp", true);
+
+            getReactApplicationContext().startActivity(focusIntent);
+        }
+    }
+
+    @ReactMethod
+    public void getExtrasFromHeadlessMode(Promise promise) {
+        if (this.headlessExtras != null) {
+            promise.resolve(this.headlessExtras);
+
+            this.headlessExtras = null;
+
+            return;
+        }
+
+        promise.resolve(null);
+    }
+
+    @ReactMethod
+	public void isDeviceLocked(Promise promise) {
+        if (Build.VERSION.SDK_INT >= 22) {
+            Context context = getAppContext();
+            KeyguardManager keyguardManager = (KeyguardManager) context.getSystemService(context.KEYGUARD_SERVICE);
+            boolean isLocked = keyguardManager.isDeviceLocked();
+            promise.resolve(isLocked);
+        }
+
+        promise.resolve(false);
+    }
+
+    @ReactMethod
+    public void sendToBack() {
+        Activity activity = getCurrentActivity();
+        if (activity != null){
+            activity.moveTaskToBack(true);
+        }
     }
 
     private void registerPhoneAccount(Context appContext) {

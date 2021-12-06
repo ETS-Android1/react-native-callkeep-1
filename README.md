@@ -11,40 +11,44 @@ For more information about **ConnectionService** on Android, please see [Android
 
 ⚠️ **CallKit** and **ConnectionService** are only available on real devices, this library will not work on simulators.
 
-#  Summary
-- [Demo](#Demo)
-- [Installation](#Installation)
-- [Usage](#Usage)
-  - [Constants](#Constants)
-  - [Android Self Managed](#Android-Self-Managed-Mode)
-  - [API](#Api)
-  - [Example](##Example)
-- [PushKit](#PushKit)
-- [Android 11](#Android-11)
-- [Debug](#Debug)
-- [Troubleshooting](#Troubleshooting)
-- [Contributing](#Contributing)
-- [License](#License)
+# Summary
 
+-   [Demo](#Demo)
+-   [Installation](#Installation)
+-   [Usage](#Usage)
+    -   [Constants](#Constants)
+    -   [Android Self Managed](#Android-Self-Managed-Mode)
+    -   [API](#Api)
+    -   [Example](##Example)
+-   [PushKit](#PushKit)
+-   [Android 11](#Android-11)
+-   [Debug](#Debug)
+-   [Troubleshooting](#Troubleshooting)
+-   [Contributing](#Contributing)
+-   [License](#License)
 
 # Demo
+
 A demo of `react-native-callkeep` is available in the [wazo-react-native-demo](https://github.com/wazo-pbx/wazo-react-native-demo) repository.
 
 #### Android
+
 ![Connection Service](docs/pictures/connection-service.jpg)
 
 #### iOS
+
 ![Connection Service](docs/pictures/call-kit.png)
 
 # Installation
+
 ```sh
 npm install --save react-native-callkeep
 # or
 yarn add react-native-callkeep
 ```
 
-- [iOS](docs/ios-installation.md)
-- [Android](docs/android-installation.md)
+-   [iOS](docs/ios-installation.md)
+-   [Android](docs/android-installation.md)
 
 # Usage
 
@@ -54,27 +58,27 @@ yarn add react-native-callkeep
 import RNCallKeep from 'react-native-callkeep';
 
 const options = {
-  ios: {
-    appName: 'My app name',
-  },
-  android: {
-    alertTitle: 'Permissions required',
-    alertDescription: 'This application needs to access your phone accounts',
-    cancelButton: 'Cancel',
-    okButton: 'ok',
-    imageName: 'phone_account_icon',
-    additionalPermissions: [PermissionsAndroid.PERMISSIONS.example],
-    // Required to get audio in background when using Android 11
-    foregroundService: {
-      channelId: 'com.company.my',
-      channelName: 'Foreground service for my app',
-      notificationTitle: 'My app is running on background',
-      notificationIcon: 'Path to the resource icon of the notification',
-    }, 
-  }
+	ios: {
+		appName: 'My app name',
+	},
+	android: {
+		alertTitle: 'Permissions required',
+		alertDescription: 'This application needs to access your phone accounts',
+		cancelButton: 'Cancel',
+		okButton: 'ok',
+		imageName: 'phone_account_icon',
+		additionalPermissions: [PermissionsAndroid.PERMISSIONS.example],
+		// Required to get audio in background when using Android 11
+		foregroundService: {
+			channelId: 'com.company.my',
+			channelName: 'Foreground service for my app',
+			notificationTitle: 'My app is running on background',
+			notificationIcon: 'Path to the resource icon of the notification',
+		},
+	},
 };
 
-RNCallKeep.setup(options).then(accepted => {});
+RNCallKeep.setup(options).then((accepted) => {});
 ```
 
 iOS only.
@@ -84,7 +88,7 @@ Alternative on iOS you can perform setup in `AppDelegate.m`. Doing this allows c
 ```objective-c
 @implementation AppDelegate
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{ 
+{
   self.bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
 
   [RNCallKeep setup:@{
@@ -105,41 +109,41 @@ Alternative on iOS you can perform setup in `AppDelegate.m`. Doing this allows c
 
 ```
 
-- `options`: Object
-  - `ios`: object
-    - `appName`: string (required)
-      It will be displayed on system UI when incoming calls received
-    - `imageName`: string (optional)
-      If provided, it will be displayed on system UI during the call
-    - `ringtoneSound`: string (optional)
-      If provided, it will be played when incoming calls received; the system will use the default ringtone if this is not provided
-    - `includesCallsInRecents`: boolean (optional)
-      If provided, calls will be shown in the recent calls when true and not when false (ios 11 and above) (Default: true)
-    - `maximumCallGroups`: string (optional)
-      If provided, the maximum number of call groups supported by this application (Default: 3)
-    - `maximumCallsPerCallGroup`: string (optional)
-      If provided, the maximum number of calls in a single group, used for conferencing (Default: 1, no conferencing)
-    - `supportsVideo`: boolean (optional)
-      If provided, whether or not the application supports video calling (Default: true)
-  - `android`: object
-    - `alertTitle`: string (required)
-      When asking for _phone account_ permission, we need to provider a title for the `Alert` to ask the user for it
-    - `alertDescription`: string (required)
-      When asking for _phone account_ permission, we need to provider a description for the `Alert` to ask the user for it
-    - `cancelButton`: string (required)
-      Cancel button label
-    - `okButton`: string (required)
-      Ok button label
-    - `imageName`: string (optional)
-      The image to use in the Android Phone application's native UI for enabling/disabling calling accounts. Should be a 48x48 HDPI
-      grayscale PNG image. Must be in your drawable resources for the parent application. Must be lowercase and underscore (_) characters
-      only, as Java doesn't like capital letters on resources.
-    - `additionalPermissions`: [PermissionsAndroid] (optional)
-      Any additional permissions you'd like your app to have at first launch. Can be used to simplify permission flows and avoid
-      multiple popups to the user at different times.
-    - `selfManaged`: boolean (optional)
-      When set to true, call keep will configure itself to run as a self managed connection service. This is an advanced topic, and it's best to refer to [Googles Documentation](https://developer.android.com/guide/topics/connectivity/telecom/selfManaged) on the matter.
-      
+-   `options`: Object
+    -   `ios`: object
+        -   `appName`: string (required)
+            It will be displayed on system UI when incoming calls received
+        -   `imageName`: string (optional)
+            If provided, it will be displayed on system UI during the call
+        -   `ringtoneSound`: string (optional)
+            If provided, it will be played when incoming calls received; the system will use the default ringtone if this is not provided
+        -   `includesCallsInRecents`: boolean (optional)
+            If provided, calls will be shown in the recent calls when true and not when false (ios 11 and above) (Default: true)
+        -   `maximumCallGroups`: string (optional)
+            If provided, the maximum number of call groups supported by this application (Default: 3)
+        -   `maximumCallsPerCallGroup`: string (optional)
+            If provided, the maximum number of calls in a single group, used for conferencing (Default: 1, no conferencing)
+        -   `supportsVideo`: boolean (optional)
+            If provided, whether or not the application supports video calling (Default: true)
+    -   `android`: object
+        -   `alertTitle`: string (required)
+            When asking for _phone account_ permission, we need to provider a title for the `Alert` to ask the user for it
+        -   `alertDescription`: string (required)
+            When asking for _phone account_ permission, we need to provider a description for the `Alert` to ask the user for it
+        -   `cancelButton`: string (required)
+            Cancel button label
+        -   `okButton`: string (required)
+            Ok button label
+        -   `imageName`: string (optional)
+            The image to use in the Android Phone application's native UI for enabling/disabling calling accounts. Should be a 48x48 HDPI
+            grayscale PNG image. Must be in your drawable resources for the parent application. Must be lowercase and underscore (\_) characters
+            only, as Java doesn't like capital letters on resources.
+        -   `additionalPermissions`: [PermissionsAndroid] (optional)
+            Any additional permissions you'd like your app to have at first launch. Can be used to simplify permission flows and avoid
+            multiple popups to the user at different times.
+        -   `selfManaged`: boolean (optional)
+            When set to true, call keep will configure itself to run as a self managed connection service. This is an advanced topic, and it's best to refer to [Googles Documentation](https://developer.android.com/guide/topics/connectivity/telecom/selfManaged) on the matter.
+
 `setup` calls internally `registerPhoneAccount` and `registerEvents`.
 
 # Constants
@@ -164,64 +168,72 @@ console.log(CK_CONSTANTS.END_CALL_REASONS.FAILED) // outputs 1
 ```
 
 # Android Self Managed Mode
+
 _This feature is available only on Android._
 
 Android supports calling apps running in what's called "Self Managed". This means the apps are able (and required) to provide their own UI for managing calls. This includes both in call UI elements and incoming call notification UI. This method is all or nothing. You can't mix partial elements, such as having a custom in call view, but use the default incoming call UI.
 
 To implement a self managed calling app, the following steps are necessary:
-- Set `selfManaged: true` in setup.
-- On an incoming call, from react native, call `RNCallKeep.displayIncomingCall`
-- CallKeep will then fire the `showIncomingCallUi` event.
-- When `showIncomingCallUi` is fired, you must show an incoming call UI. This would be a high priority notification ([Android: Display time-sensitive notifications](https://developer.android.com/training/notify-user/time-sensitive)).
-- If the user answers the call, you call the appropriate RNCallKeep actions such as `answerCall` or `endCall`
+
+-   Set `selfManaged: true` in setup.
+-   On an incoming call, from react native, call `RNCallKeep.displayIncomingCall`
+-   CallKeep will then fire the `showIncomingCallUi` event.
+-   When `showIncomingCallUi` is fired, you must show an incoming call UI. This would be a high priority notification ([Android: Display time-sensitive notifications](https://developer.android.com/training/notify-user/time-sensitive)).
+-   If the user answers the call, you call the appropriate RNCallKeep actions such as `answerCall` or `endCall`
 
 Self Managed calling apps are an advanced topic, and there are many steps involved in implementing them, but here are some things to keep in mind:
-- React Native Headless Tasks are a great way to execute React Native code. Remember to start up the headless task as a Foreground Service.
-- Android will deprioritize your high priority FCM notifications if you fail to show an incoming call ui when receiving them.
-- You can avoid getting flooded with sticky foreground service notifications by not defining a Foreground Service for CallKeep, and instead managing this on your own.
+
+-   React Native Headless Tasks are a great way to execute React Native code. Remember to start up the headless task as a Foreground Service.
+-   Android will deprioritize your high priority FCM notifications if you fail to show an incoming call ui when receiving them.
+-   You can avoid getting flooded with sticky foreground service notifications by not defining a Foreground Service for CallKeep, and instead managing this on your own.
 
 ⚠️ To be able to use the self managed mode, you'll have to add the `READ_CALL_LOG` permission in your `android/src/main/AndroidManifest.xml` file:
+
 ```
 <uses-permission android:name="android.permission.READ_CALL_LOG" />
 ```
 
 # API
 
-| Method                                                            | Return Type         |  iOS | Android |
-| ----------------------------------------------------------------- | ------------------- | :--: | :-----: |
-| [getInitialEvents()](#getInitialEvents)                           | `Promise<String[]>` |  ✅  |   ❌    |
-| [setAvailable()](#setAvailable)                                   | `Promise<void>`     |  ❌  |   ✅    |
-| [setForegroundServiceSettings()](#setForegroundServiceSettings)   | `Promise<void>`     |  ❌  |   ✅    |
-| [canMakeMultipleCalls()](#canMakeMultipleCalls)                   | `Promise<void>`     |  ❌  |   ✅    |
-| [setCurrentCallActive()](#setCurrentCallActive)                   | `Promise<void>`     |  ❌  |   ✅    |
-| [isCallActive()](#isCallActive)                                   | `Promise<Boolean>`  |  ✅  |   ❌    |
-| [getCalls()](#getCalls)                                           | `Promise<Object[]>` |  ✅  |   ❌    |
-| [displayIncomingCall()](#displayIncomingCall)                     | `Promise<void>`     |  ✅  |   ✅    |
-| [answerIncomingCall()](#answerIncomingCall)                       | `Promise<void>`     |  ✅  |   ✅    |
-| [startCall()](#startCall)                                         | `Promise<void>`     |  ✅  |   ✅    |
-| [updateDisplay()](#updateDisplay)                                 | `Promise<void>`     |  ✅  |   ✅    |
-| [endCall()](#endCall)                                             | `Promise<void>`     |  ✅  |   ✅    |
-| [endAllCalls()](#endAllCalls)                                     | `Promise<void>`     |  ✅  |   ✅    |
-| [rejectCall()](#rejectCall)                                       | `Promise<void>`     |  ✅  |   ✅    |
-| [reportEndCallWithUUID()](#reportEndCallWithUUID)                 | `Promise<void>`     |  ✅  |   ✅    |
-| [setMutedCall()](#setMutedCall)                                   | `Promise<void>`     |  ✅  |   ✅    |
-| [setOnHold()](#setOnHold)                                         | `Promise<void>`     |  ✅  |   ✅    |
-| [checkIfBusy()](#checkIfBusy)                                     | `Promise<Boolean>`  |  ✅  |   ❌    |
-| [checkSpeaker()](#checkSpeaker)                                   | `Promise<Boolean>`  |  ✅  |   ❌    |
-| [toggleAudioRouteSpeaker()](#toggleAudioRouteSpeaker)             | `Promise<void>`     |  ❌  |   ✅    |
-| [supportConnectionService()](#supportConnectionService)           | `Promise<Boolean>`  |  ❌  |   ✅    |
-| [hasPhoneAccount()](#hasPhoneAccount)                             | `Promise<Boolean>`  |  ❌  |   ✅    |
-| [hasOutgoingCall()](#hasOutgoingCall)                             | `Promise<Boolean>`  |  ❌  |   ✅    |
-| [hasDefaultPhoneAccount()](#hasDefaultPhoneAccount)               | `Promise<Boolean>`  |  ❌  |   ✅    |
-| [checkPhoneAccountEnabled()](#checkPhoneAccountEnabled)           | `Promise<Boolean>`  |  ❌  |   ✅    |
-| [isConnectionServiceAvailable()](#isConnectionServiceAvailable)   | `Promise<Boolean>`  |  ❌  |   ✅    |
-| [backToForeground()](#backToForeground)                           | `Promise<void>`     |  ❌  |   ✅    |
-| [removeEventListener()](#removeEventListener)                     | `void`              |  ✅  |   ✅    |
-| [registerPhoneAccount()](#registerPhoneAccount)                   | `void`              |  ❌  |   ✅    |
-| [registerAndroidEvents()](#registerAndroidEvents)                 | `void`              |  ❌  |   ✅    |
-
+| Method                                                          | Return Type              | iOS | Android |
+| --------------------------------------------------------------- | ------------------------ | :-: | :-----: |
+| [getInitialEvents()](#getInitialEvents)                         | `Promise<String[]>`      | ✅  |   ❌    |
+| [setAvailable()](#setAvailable)                                 | `Promise<void>`          | ❌  |   ✅    |
+| [setForegroundServiceSettings()](#setForegroundServiceSettings) | `Promise<void>`          | ❌  |   ✅    |
+| [canMakeMultipleCalls()](#canMakeMultipleCalls)                 | `Promise<void>`          | ❌  |   ✅    |
+| [setCurrentCallActive()](#setCurrentCallActive)                 | `Promise<void>`          | ❌  |   ✅    |
+| [isCallActive()](#isCallActive)                                 | `Promise<Boolean>`       | ✅  |   ❌    |
+| [getCalls()](#getCalls)                                         | `Promise<Object[]>`      | ✅  |   ❌    |
+| [displayIncomingCall()](#displayIncomingCall)                   | `Promise<void>`          | ✅  |   ✅    |
+| [answerIncomingCall()](#answerIncomingCall)                     | `Promise<void>`          | ✅  |   ✅    |
+| [startCall()](#startCall)                                       | `Promise<void>`          | ✅  |   ✅    |
+| [updateDisplay()](#updateDisplay)                               | `Promise<void>`          | ✅  |   ✅    |
+| [endCall()](#endCall)                                           | `Promise<void>`          | ✅  |   ✅    |
+| [endAllCalls()](#endAllCalls)                                   | `Promise<void>`          | ✅  |   ✅    |
+| [rejectCall()](#rejectCall)                                     | `Promise<void>`          | ✅  |   ✅    |
+| [reportEndCallWithUUID()](#reportEndCallWithUUID)               | `Promise<void>`          | ✅  |   ✅    |
+| [setMutedCall()](#setMutedCall)                                 | `Promise<void>`          | ✅  |   ✅    |
+| [setOnHold()](#setOnHold)                                       | `Promise<void>`          | ✅  |   ✅    |
+| [checkIfBusy()](#checkIfBusy)                                   | `Promise<Boolean>`       | ✅  |   ❌    |
+| [checkSpeaker()](#checkSpeaker)                                 | `Promise<Boolean>`       | ✅  |   ❌    |
+| [toggleAudioRouteSpeaker()](#toggleAudioRouteSpeaker)           | `Promise<void>`          | ❌  |   ✅    |
+| [supportConnectionService()](#supportConnectionService)         | `Promise<Boolean>`       | ❌  |   ✅    |
+| [hasPhoneAccount()](#hasPhoneAccount)                           | `Promise<Boolean>`       | ❌  |   ✅    |
+| [hasOutgoingCall()](#hasOutgoingCall)                           | `Promise<Boolean>`       | ❌  |   ✅    |
+| [hasDefaultPhoneAccount()](#hasDefaultPhoneAccount)             | `Promise<Boolean>`       | ❌  |   ✅    |
+| [checkPhoneAccountEnabled()](#checkPhoneAccountEnabled)         | `Promise<Boolean>`       | ❌  |   ✅    |
+| [isConnectionServiceAvailable()](#isConnectionServiceAvailable) | `Promise<Boolean>`       | ❌  |   ✅    |
+| [backToForeground()](#backToForeground)                         | `Promise<void>`          | ❌  |   ✅    |
+| [openAppFromHeadlessMode()](#openAppFromHeadlessMode)           | `void`                   | ❌  |   ✅    |
+| [getExtrasFromHeadlessMode()](#getExtrasFromHeadlessMode)       | `Promise<HeadlessExtra>` | ❌  |   ✅    |
+| [isDeviceLocked()](#isDeviceLocked)                             | `Promise<Boolean>`       | ❌  |   ✅    |
+| [sendToBack()](#sendToBack)                                     | `void`                   | ❌  |   ✅    |
+| [removeEventListener()](#removeEventListener)                   | `void`                   | ✅  |   ✅    |
+| [registerPhoneAccount()](#registerPhoneAccount)                 | `void`                   | ❌  |   ✅    |
+| [registerAndroidEvents()](#registerAndroidEvents)               | `void`                   | ❌  |   ✅    |
 
 ### getInitialEvents
+
 _This feature is available only on iOS._
 
 If there were some actions performed by user before JS context has been created, this method would return early fired events. This is alternative to "didLoadWithEvents" event.
@@ -231,6 +243,7 @@ RNCallKeep.getInitialEvents();
 ```
 
 ### setAvailable
+
 _This feature is available only on Android._
 
 Tell _ConnectionService_ that the device is ready to make outgoing calls via the native Phone app.
@@ -243,6 +256,7 @@ RNCallKeep.setAvailable(true);
 ```
 
 ### setForegroundServiceSettings
+
 _This feature is available only on Android._
 
 Configures the [Foreground Service](https://developer.android.com/about/versions/11/privacy/foreground-services) used for Android 11 to get microphone access on background.
@@ -250,14 +264,15 @@ Similar to set the `foregroundService` key in the `setup()` method.
 
 ```js
 RNCallKeep.setForegroundServiceSettings({
-    channelId: 'com.company.my',
-    channelName: 'Foreground service for my app',
-    notificationTitle: 'My app is running on background',
-    notificationIcon: 'Path to the resource icon of the notification',
+	channelId: 'com.company.my',
+	channelName: 'Foreground service for my app',
+	notificationTitle: 'My app is running on background',
+	notificationIcon: 'Path to the resource icon of the notification',
 });
 ```
 
 ### canMakeMultipleCalls
+
 _This feature is available only on Android._
 
 Disable the "Add call" button in ConnectionService UI.
@@ -266,10 +281,11 @@ Disable the "Add call" button in ConnectionService UI.
 RNCallKeep.canMakeMultipleCalls(false); // Enabled by default
 ```
 
-- `active`: boolean
-  - Tell whether the app is ready or not
+-   `active`: boolean
+    -   Tell whether the app is ready or not
 
 ### setCurrentCallActive
+
 _This feature is available only on Android._
 
 Mark the current call as active (eg: when the callee has answered).
@@ -280,14 +296,15 @@ Be sure to set this only after your call is ready for two way audio; used both i
 RNCallKeep.setCurrentCallActive(uuid);
 ```
 
-- `uuid`: string
-  - The `uuid` used for `startCall` or `displayIncomingCall`
+-   `uuid`: string
+    -   The `uuid` used for `startCall` or `displayIncomingCall`
 
 ### isCallActive
+
 _This feature is available only on IOS._
 
-Returns true if the UUID passed matches an existing and answered call. 
-This will return true ONLY if the call exists and the user has already answered the call. It will return false 
+Returns true if the UUID passed matches an existing and answered call.
+This will return true ONLY if the call exists and the user has already answered the call. It will return false
 if the call does not exist or has not been answered. This is exposed to both React Native and Native sides.
 This was exposed so a call can be canceled if ringing and the user answered on a different device.
 
@@ -295,9 +312,8 @@ This was exposed so a call can be canceled if ringing and the user answered on a
 RNCallKeep.isCallActive(uuid);
 ```
 
-- `uuid`: string
-  - The `uuid` used for `startCall` or `displayIncomingCall`
-
+-   `uuid`: string
+    -   The `uuid` used for `startCall` or `displayIncomingCall`
 
 ### getCalls
 
@@ -308,14 +324,15 @@ Returns a Promise. The result will be an array with all current calls and their 
 ```js
 RNCallKeep.getCalls();
 
-response:
-[{
-  callUUID: "E26B14F7-2CDF-48D0-9925-532199AE7C48",
-  hasConnected: true,
-  hasEnded: false,
-  onHold: false,
-  outgoing: false,
-}]
+response: [
+	{
+		callUUID: 'E26B14F7-2CDF-48D0-9925-532199AE7C48',
+		hasConnected: true,
+		hasEnded: false,
+		onHold: false,
+		outgoing: false,
+	},
+];
 ```
 
 ### displayIncomingCall
@@ -323,40 +340,47 @@ response:
 Display system UI for incoming calls
 
 ```js
-RNCallKeep.displayIncomingCall(uid, handle, localizedCallerName = '', handleType = 'number', hasVideo = false, options = null);
+RNCallKeep.displayIncomingCall(
+	uid,
+	handle,
+	(localizedCallerName = ''),
+	(handleType = 'number'),
+	(hasVideo = false),
+	(options = null)
+);
 ```
 
-- `uuid`: string
-  - An `uuid` that should be stored and re-used for `stopCall`.
-- `handle`: string
-  - Phone number of the caller
-- `localizedCallerName`: string (optional)
-  - Name of the caller to be displayed on the native UI
-- `handleType`: string (optional, iOS only)
-  - `generic`
-  - `number` (default)
-  - `email`
-- `hasVideo`: boolean (optional, iOS only)
-  - `false` (default)
-  - `true` (you know... when not false)
-- `options`: object (optional)
-  - `ios`: object
-    - `supportsHolding`: boolean (optional, default true)
-    - `supportsDTMF`: boolean (optional, default true)
-    - `supportsGrouping`: boolean (optional, default true)
-    - `supportsUngrouping`: boolean (optional, default true)
-  - `android`: object (currently no-op)
+-   `uuid`: string
+    -   An `uuid` that should be stored and re-used for `stopCall`.
+-   `handle`: string
+    -   Phone number of the caller
+-   `localizedCallerName`: string (optional)
+    -   Name of the caller to be displayed on the native UI
+-   `handleType`: string (optional, iOS only)
+    -   `generic`
+    -   `number` (default)
+    -   `email`
+-   `hasVideo`: boolean (optional, iOS only)
+    -   `false` (default)
+    -   `true` (you know... when not false)
+-   `options`: object (optional)
+    -   `ios`: object
+        -   `supportsHolding`: boolean (optional, default true)
+        -   `supportsDTMF`: boolean (optional, default true)
+        -   `supportsGrouping`: boolean (optional, default true)
+        -   `supportsUngrouping`: boolean (optional, default true)
+    -   `android`: object (currently no-op)
 
 ### answerIncomingCall
 
 Use this to tell the sdk a user answered a call from the app UI.
 
 ```js
-RNCallKeep.answerIncomingCall(uuid)
+RNCallKeep.answerIncomingCall(uuid);
 ```
-- `uuid`: string
-  - The `uuid` used for `startCall` or `displayIncomingCall`
 
+-   `uuid`: string
+    -   The `uuid` used for `startCall` or `displayIncomingCall`
 
 ### startCall
 
@@ -364,50 +388,53 @@ When you make an outgoing call, tell the device that a call is occurring. The ar
 different on iOS and Android:
 
 iOS:
+
 ```js
 RNCallKeep.startCall(uuid, handle, contactIdentifier, handleType, hasVideo);
 ```
 
 Android:
+
 ```js
 RNCallKeep.startCall(uuid, handle, contactIdentifier);
 ```
 
-- `uuid`: string
-  - An `uuid` that should be stored and re-used for `stopCall`.
-- `handle`: string
-  - Phone number of the callee
-- `contactIdentifier`: string
-  - The identifier is displayed in the native call UI, and is typically the name of the call recipient.
-- `handleType`: string (optional, iOS only)
-  - `generic`
-  - `number` (default)
-  - `email`
-- `hasVideo`: boolean (optional, iOS only)
-  - `false` (default)
-  - `true` (you know... when not false)
-
+-   `uuid`: string
+    -   An `uuid` that should be stored and re-used for `stopCall`.
+-   `handle`: string
+    -   Phone number of the callee
+-   `contactIdentifier`: string
+    -   The identifier is displayed in the native call UI, and is typically the name of the call recipient.
+-   `handleType`: string (optional, iOS only)
+    -   `generic`
+    -   `number` (default)
+    -   `email`
+-   `hasVideo`: boolean (optional, iOS only)
+    -   `false` (default)
+    -   `true` (you know... when not false)
 
 ### updateDisplay
+
 Use this to update the display after an outgoing call has started.
 
 ```js
-RNCallKeep.updateDisplay(uuid, displayName, handle)
+RNCallKeep.updateDisplay(uuid, displayName, handle);
 ```
-- `uuid`: string
-  - The `uuid` used for `startCall` or `displayIncomingCall`
-- `displayName`: string (optional)
-  - Name of the caller to be displayed on the native UI
-- `handle`: string
-  - Phone number of the caller
-- `options`: object (optional)
-  - `ios`: object
-    - `hasVideo`: boolean (optional)
-    - `supportsHolding`: boolean (optional)
-    - `supportsDTMF`: boolean (optional)
-    - `supportsGrouping`: boolean (optional)
-    - `supportsUngrouping`: boolean (optional)
-  - `android`: object (currently no-op)
+
+-   `uuid`: string
+    -   The `uuid` used for `startCall` or `displayIncomingCall`
+-   `displayName`: string (optional)
+    -   Name of the caller to be displayed on the native UI
+-   `handle`: string
+    -   Phone number of the caller
+-   `options`: object (optional)
+    -   `ios`: object
+        -   `hasVideo`: boolean (optional)
+        -   `supportsHolding`: boolean (optional)
+        -   `supportsDTMF`: boolean (optional)
+        -   `supportsGrouping`: boolean (optional)
+        -   `supportsUngrouping`: boolean (optional)
+    -   `android`: object (currently no-op)
 
 ### endCall
 
@@ -418,8 +445,8 @@ When finish an incoming/outgoing call.
 RNCallKeep.endCall(uuid);
 ```
 
-- `uuid`: string
-  - The `uuid` used for `startCall` or `displayIncomingCall`
+-   `uuid`: string
+    -   The `uuid` used for `startCall` or `displayIncomingCall`
 
 ### endAllCalls
 
@@ -437,35 +464,36 @@ When you reject an incoming call.
 RNCallKeep.rejectCall(uuid);
 ```
 
-- `uuid`: string
-  - The `uuid` used for `startCall` or `displayIncomingCall`
+-   `uuid`: string
+    -   The `uuid` used for `startCall` or `displayIncomingCall`
 
 ### reportEndCallWithUUID
 
 Report that the call ended without the user initiating.  
 (Not ended by user, is usually due to the following reasons)
 
-
 ```js
 RNCallKeep.reportEndCallWithUUID(uuid, reason);
 ```
 
-- `uuid`: string
-  - The `uuid` used for `startCall` or `displayIncomingCall`
-- `reason`: int
-  - Reason for the end call
-    - Call failed: 1
-    - Remote user ended call: 2
-    - Remote user did not answer: 3
-    - Call Answered elsewhere: 4
-    - Call declined elsewhere: 5 (on Android this will map to Remote user ended call if you use the constants)
-    - Missed: 6 (on iOS this will map to remote user ended call)
-  - Access reasons as constants
-  ```js
-  const { CONSTANTS as CK_CONSTANTS, RNCallKeep } from 'react-native-callkeep';
+-   `uuid`: string
+    -   The `uuid` used for `startCall` or `displayIncomingCall`
+-   `reason`: int
 
-  RNCallKeep.reportEndCallWithUUID(uuid, CK_CONSTANTS.END_CALL_REASONS.FAILED);
-  ```
+    -   Reason for the end call
+        -   Call failed: 1
+        -   Remote user ended call: 2
+        -   Remote user did not answer: 3
+        -   Call Answered elsewhere: 4
+        -   Call declined elsewhere: 5 (on Android this will map to Remote user ended call if you use the constants)
+        -   Missed: 6 (on iOS this will map to remote user ended call)
+    -   Access reasons as constants
+
+    ```js
+    const { CONSTANTS as CK_CONSTANTS, RNCallKeep } from 'react-native-callkeep';
+
+    RNCallKeep.reportEndCallWithUUID(uuid, CK_CONSTANTS.END_CALL_REASONS.FAILED);
+    ```
 
 ### setMutedCall
 
@@ -475,21 +503,21 @@ Switch the mic on/off.
 RNCallKeep.setMutedCall(uuid, true);
 ```
 
-- `uuid`: string
-  - uuid of the current call.
-- `muted`: boolean
+-   `uuid`: string
+    -   uuid of the current call.
+-   `muted`: boolean
 
 ### setOnHold
 
 Set a call on/off hold.
 
 ```js
-RNCallKeep.setOnHold(uuid, true)
+RNCallKeep.setOnHold(uuid, true);
 ```
 
-- `uuid`: string
-  - uuid of the current call.
-- `hold`: boolean
+-   `uuid`: string
+    -   uuid of the current call.
+-   `hold`: boolean
 
 ### checkIfBusy
 
@@ -516,15 +544,15 @@ RNCallKeep.checkSpeaker();
 _This feature is available only on Android._
 
 Update the audio route of Audio Service on Android with a `routeSpeaker` boolean value (`true` if speaker need on, `false` otherwise).
-When Phone call is active, Android control the audio via connection service. so this function help to toggle the audio to Speaker or wired/ear-piece or vice-versa 
+When Phone call is active, Android control the audio via connection service. so this function help to toggle the audio to Speaker or wired/ear-piece or vice-versa
 
 ```js
 RNCallKeep.toggleAudioRouteSpeaker(uuid, true);
 ```
 
-- `uuid`: string
-  - uuid of the current call.
-- `routeSpeaker`: boolean
+-   `uuid`: string
+    -   uuid of the current call.
+-   `routeSpeaker`: boolean
 
 ### getAudioRoutes
 
@@ -549,10 +577,10 @@ Set audio route using a route from `getAudioRoutes`.
 await RNCallKeep.setAudioRoute(uuid, routeName);
 ```
 
-- `uuid`: string
-  - uuid of the current call.
-- `routeName`: String
-  - AudioRoute.name. 
+-   `uuid`: string
+    -   uuid of the current call.
+-   `routeName`: String
+    -   AudioRoute.name.
 
 ### supportConnectionService (async)
 
@@ -586,7 +614,6 @@ The user can hang up the call before your application has been started in backgr
 
 To be sure that the outgoing call is still here, you can call `hasOutgoingCall` when you app waken up.
 
-
 ```js
 const hasOutgoingCall = await RNCallKeep.hasOutgoingCall();
 ```
@@ -602,8 +629,8 @@ This is a workaround for an [issue](https://github.com/wazo-pbx/react-native-cal
 
 ```js
 const options = {
-  alertTitle: 'Default not set',
-  alertDescription: 'Please set the default phone account'
+	alertTitle: 'Default not set',
+	alertDescription: 'Please set the default phone account',
 };
 
 RNCallKeep.hasDefaultPhoneAccount(options);
@@ -618,7 +645,6 @@ Checks if the user has set a default [phone account](https://developer.android.c
 It's useful for custom permission prompts. It should be used in pair with `registerPhoneAccount`
 Similar to `hasDefaultPhoneAccount` but without trigering a prompt if the user doesn't have a phone account.
 
-
 ```js
 RNCallKeep.checkPhoneAccountEnabled();
 ```
@@ -629,7 +655,6 @@ _This feature is available only on Android._
 
 Check if the device support ConnectionService.
 
-
 ```js
 RNCallKeep.checkPhoneAccountEnabled();
 ```
@@ -638,11 +663,62 @@ RNCallKeep.checkPhoneAccountEnabled();
 
 _This feature is available only on Android._
 
-Use this to display the application in foreground if the application was in background state. 
+Use this to display the application in foreground if the application was in background state.
 This method will open the application if it was closed.
 
 ```js
 RNCallKeep.backToForeground();
+```
+
+### openAppFromHeadlessMode
+
+_This feature is available only on Android._
+
+Use this to display the application in foreground if the application was in background state.
+This method will open the application if it was closed. (Works with android API 30)
+
+```js
+const headlessExtra = {
+  callUUID: String,
+  callerName: String,
+  handle: String,
+  hasVideo: Boolean
+  data: {
+    [key: String]: String|Number|Boolean,
+  }
+}
+
+RNCallKeep.openAppFromHeadlessMode(headlessExtra);
+```
+
+### getExtrasFromHeadlessMode
+
+_This feature is available only on Android._
+
+Use this to fetch `headlessExtra` passed by openAppFromHeadlessMode. Returns a `Promise`.
+
+```js
+RNCallKeep.getExtrasFromHeadlessMode();
+```
+
+### isDeviceLocked
+
+_This feature is available only on Android._
+
+Use this to check if phone is locked or not from headless task. Returns a `Promise` that resolves to `boolean`.
+
+```js
+RNCallKeep.isDeviceLocked();
+```
+
+### sendToBack
+
+_This feature is available only on Android._
+
+Use this to send app to background. Possible use case could be to send app back to background after call ended if the call was invoked when device was locked.
+
+```js
+RNCallKeep.sendToBack();
 ```
 
 ### removeEventListener
@@ -679,20 +755,20 @@ RNCallKeep.registerAndroidEvents();
 
 ## Events
 
-| Event                                                             |  iOS | Android |
-| ----------------------------------------------------------------- | :--: | :-----: |
-| [didReceiveStartCallAction()](#didReceiveStartCallAction)         |  ✅  |   ✅    |
-| [answerCall()](#answerCall)                                       |  ✅  |   ✅    |
-| [endCall()](#endCall)                                             |  ✅  |   ✅    |
-| [didActivateAudioSession()](#didActivateAudioSession)             |  ✅  |   ✅    |
-| [didDisplayIncomingCall()](#didDisplayIncomingCall)               |  ✅  |   ✅    |
-| [didPerformSetMutedCallAction()](#didPerformSetMutedCallAction)   |  ✅  |   ✅    |
-| [didToggleHoldCallAction()](#didToggleHoldCallAction)             |  ✅  |   ✅    |
-| [didPerformDTMFAction()](#didPerformDTMFAction)                   |  ✅  |   ✅    |
-| [didLoadWithEvents()](#didLoadWithEvents)                         |  ✅  |   ✅    |
-| [showIncomingCallUi()](#showIncomingCallUi)                       |  ❌  |   ✅    |
-| [silenceIncomingCall()](#silenceIncomingCall)                     |  ❌  |   ✅    |
-| [checkReachability()](#checkReachability)                         |  ❌  |   ✅    |
+| Event                                                           | iOS | Android |
+| --------------------------------------------------------------- | :-: | :-----: |
+| [didReceiveStartCallAction()](#didReceiveStartCallAction)       | ✅  |   ✅    |
+| [answerCall()](#answerCall)                                     | ✅  |   ✅    |
+| [endCall()](#endCall)                                           | ✅  |   ✅    |
+| [didActivateAudioSession()](#didActivateAudioSession)           | ✅  |   ✅    |
+| [didDisplayIncomingCall()](#didDisplayIncomingCall)             | ✅  |   ✅    |
+| [didPerformSetMutedCallAction()](#didPerformSetMutedCallAction) | ✅  |   ✅    |
+| [didToggleHoldCallAction()](#didToggleHoldCallAction)           | ✅  |   ✅    |
+| [didPerformDTMFAction()](#didPerformDTMFAction)                 | ✅  |   ✅    |
+| [didLoadWithEvents()](#didLoadWithEvents)                       | ✅  |   ✅    |
+| [showIncomingCallUi()](#showIncomingCallUi)                     | ❌  |   ✅    |
+| [silenceIncomingCall()](#silenceIncomingCall)                   | ❌  |   ✅    |
+| [checkReachability()](#checkReachability)                       | ❌  |   ✅    |
 
 ### didReceiveStartCallAction
 
@@ -704,17 +780,18 @@ Try to start your app call action from here (e.g. get credentials of the user by
 Note: on iOS `callUUID` is not defined as the call is not yet managed by CallKit. You have to generate your own and call `startCall`.
 
 ```js
-RNCallKeep.addEventListener('didReceiveStartCallAction', ({ handle, callUUID, name }) => {
-
-});
+RNCallKeep.addEventListener(
+	'didReceiveStartCallAction',
+	({ handle, callUUID, name }) => {}
+);
 ```
 
-- `handle` (string)
-  - Phone number of the callee
-- `callUUID` (string)
-  - The UUID of the call that is to be answered
-- `name` (string)
-  - Name of the callee
+-   `handle` (string)
+    -   Phone number of the callee
+-   `callUUID` (string)
+    -   The UUID of the call that is to be answered
+-   `name` (string)
+    -   Name of the callee
 
 ### - answerCall
 
@@ -722,12 +799,12 @@ User answer the incoming call
 
 ```js
 RNCallKeep.addEventListener('answerCall', ({ callUUID }) => {
-  // Do your normal `Answering` actions here.
+	// Do your normal `Answering` actions here.
 });
 ```
 
-- `callUUID` (string)
-  - The UUID of the call that is to be answered.
+-   `callUUID` (string)
+    -   The UUID of the call that is to be answered.
 
 ### - endCall
 
@@ -735,12 +812,12 @@ User finish the call.
 
 ```js
 RNCallKeep.addEventListener('endCall', ({ callUUID }) => {
-  // Do your normal `Hang Up` actions here
+	// Do your normal `Hang Up` actions here
 });
 ```
 
-- `callUUID` (string)
-  - The UUID of the call that is to be ended.
+-   `callUUID` (string)
+    -   The UUID of the call that is to be ended.
 
 ### - didActivateAudioSession
 
@@ -748,8 +825,8 @@ The `AudioSession` has been activated by **RNCallKeep**.
 
 ```js
 RNCallKeep.addEventListener('didActivateAudioSession', () => {
-  // you might want to do following things when receiving this event:
-  // - Start playing ringback if it is an outgoing call
+	// you might want to do following things when receiving this event:
+	// - Start playing ringback if it is an outgoing call
 });
 ```
 
@@ -758,71 +835,76 @@ RNCallKeep.addEventListener('didActivateAudioSession', () => {
 Callback for `RNCallKeep.displayIncomingCall`
 
 ```js
-RNCallKeep.addEventListener('didDisplayIncomingCall', ({ error, callUUID, handle, localizedCallerName, hasVideo, fromPushKit, payload }) => {
-  // you might want to do following things when receiving this event:
-  // - Start playing ringback if it is an outgoing call
-});
+RNCallKeep.addEventListener(
+	'didDisplayIncomingCall',
+	({
+		error,
+		callUUID,
+		handle,
+		localizedCallerName,
+		hasVideo,
+		fromPushKit,
+		payload,
+	}) => {
+		// you might want to do following things when receiving this event:
+		// - Start playing ringback if it is an outgoing call
+	}
+);
 ```
 
-- `error` (string)
-  - iOS only.
-- `callUUID` (string)
-  - The UUID of the call.
-- `handle` (string)
-  - Phone number of the caller
-- `localizedCallerName` (string)
-  - Name of the caller to be displayed on the native UI
-- `hasVideo` (string)
-  - `1` (video enabled)
-  - `0` (video not enabled)
-- `fromPushKit` (string)
-  - `1` (call triggered from PushKit)
-  - `0` (call not triggered from PushKit)
-- `payload` (object)
-  - VOIP push payload.
+-   `error` (string)
+    -   iOS only.
+-   `callUUID` (string)
+    -   The UUID of the call.
+-   `handle` (string)
+    -   Phone number of the caller
+-   `localizedCallerName` (string)
+    -   Name of the caller to be displayed on the native UI
+-   `hasVideo` (string)
+    -   `1` (video enabled)
+    -   `0` (video not enabled)
+-   `fromPushKit` (string)
+    -   `1` (call triggered from PushKit)
+    -   `0` (call not triggered from PushKit)
+-   `payload` (object)
+    -   VOIP push payload.
 
 ### - didPerformSetMutedCallAction
 
 A call was muted by the system or the user:
 
 ```js
-RNCallKeep.addEventListener('didPerformSetMutedCallAction', ({ muted, callUUID }) => {
-
-});
+RNCallKeep.addEventListener('didPerformSetMutedCallAction', ({ muted, callUUID }) => {});
 ```
 
-- `muted` (boolean)
-- `callUUID` (string)
-  - The UUID of the call.
+-   `muted` (boolean)
+-   `callUUID` (string)
+    -   The UUID of the call.
 
 ### - didToggleHoldCallAction
 
 A call was held or unheld by the current user
 
 ```js
-RNCallKeep.addEventListener('didToggleHoldCallAction', ({ hold, callUUID }) => {
-
-});
+RNCallKeep.addEventListener('didToggleHoldCallAction', ({ hold, callUUID }) => {});
 ```
 
-- `hold` (boolean)
-- `callUUID` (string)
-  - The UUID of the call.
+-   `hold` (boolean)
+-   `callUUID` (string)
+    -   The UUID of the call.
 
 ### - didPerformDTMFAction
 
 Used type a number on his dialer
 
 ```js
-RNCallKeep.addEventListener('didPerformDTMFAction', ({ digits, callUUID }) => {
-
-});
+RNCallKeep.addEventListener('didPerformDTMFAction', ({ digits, callUUID }) => {});
 ```
 
-- `digits` (string)
-  - The digits that emit the dtmf tone
-- `callUUID` (string)
-  - The UUID of the call.
+-   `digits` (string)
+    -   The digits that emit the dtmf tone
+-   `callUUID` (string)
+    -   The UUID of the call.
 
 ### - didLoadWithEvents
 
@@ -840,16 +922,16 @@ In order for this event to reliably fire, it's necessary to perform setup in `Ap
 // register `didLoadWithEvents` somewhere early in your app when it is ready to handle callkeep events.
 
 RNCallKeep.addEventListener('didLoadWithEvents', (events) => {
-  // `events` is passed as an Array chronologically, handle or ignore events based on the app's logic
-  // see example usage in https://github.com/react-native-webrtc/react-native-callkeep/pull/169 or https://github.com/react-native-webrtc/react-native-callkeep/pull/205
+	// `events` is passed as an Array chronologically, handle or ignore events based on the app's logic
+	// see example usage in https://github.com/react-native-webrtc/react-native-callkeep/pull/169 or https://github.com/react-native-webrtc/react-native-callkeep/pull/205
 });
 ```
 
-- `events` Array
-  - `name`: string
-    Native event name like: `RNCallKeepPerformAnswerCallAction`
-  - `data`: object
-    Object with data passed together with specific event so it can be handled in the same way like original event, for example `({ callUUID })` for `answerCall` event if `name` is `RNCallKeepPerformAnswerCallAction`
+-   `events` Array
+    -   `name`: string
+        Native event name like: `RNCallKeepPerformAnswerCallAction`
+    -   `data`: object
+        Object with data passed together with specific event so it can be handled in the same way like original event, for example `({ callUUID })` for `answerCall` event if `name` is `RNCallKeepPerformAnswerCallAction`
 
 ### - showIncomingCallUi
 
@@ -858,41 +940,36 @@ _Android only. Self Managed only._
 Only when CallKeep is setup to be in self managed mode. Signals that the app must show an incoming call UI. The implementor must either call `displayIncomingCall` from react native or native android code to make this event fire.
 
 ```js
-RNCallKeep.addEventListener('showIncomingCallUi', ({ handle, callUUID, name }) => {
-
-});
+RNCallKeep.addEventListener('showIncomingCallUi', ({ handle, callUUID, name }) => {});
 ```
 
 The following values will match those initially passed to `displayIncomingCall`
 
-- `handle` (string)
-  - Phone number of the incoming caller.
-- `callUUID` (string)
-  - The UUID of the call.
-- `name` (string)
-  - Caller Name.
+-   `handle` (string)
+    -   Phone number of the incoming caller.
+-   `callUUID` (string)
+    -   The UUID of the call.
+-   `name` (string)
+    -   Caller Name.
 
 ### - silenceIncomingCall
 
 _Android only. Self Managed only._
 
-Corresponds to the native [onSilence event](https://developer.android.com/reference/android/telecom/Connection#onSilence()). The implementor should silence the corresponding incoming calls notification sound when and if this event is fired.
+Corresponds to the native [onSilence event](<https://developer.android.com/reference/android/telecom/Connection#onSilence()>). The implementor should silence the corresponding incoming calls notification sound when and if this event is fired.
 
 ```js
-RNCallKeep.addEventListener('silenceIncomingCall', ({ handle, callUUID, name }) => {
-
-});
+RNCallKeep.addEventListener('silenceIncomingCall', ({ handle, callUUID, name }) => {});
 ```
 
 The following values will match those initially passed to `silenceIncomingCall`
 
-- `handle` (string)
-  - Phone number of the incoming caller.
-- `callUUID` (string)
-  - The UUID of the call.
-- `name` (string)
-  - Caller Name.
-
+-   `handle` (string)
+    -   Phone number of the incoming caller.
+-   `callUUID` (string)
+    -   The UUID of the call.
+-   `name` (string)
+    -   Caller Name.
 
 ### - checkReachability
 
@@ -903,9 +980,8 @@ So we have to check if the application is reachable before making a call from th
 
 ```js
 RNCallKeep.addEventListener('checkReachability', () => {
-  RNCallKeep.setReachable();
+	RNCallKeep.setReachable();
 });
-
 ```
 
 ## Example
@@ -918,126 +994,135 @@ import RNCallKeep from 'react-native-callkeep';
 import uuid from 'uuid';
 
 class RNCallKeepExample extends React.Component {
-  constructor(props) {
-    super(props);
+	constructor(props) {
+		super(props);
 
-    this.currentCallId = null;
+		this.currentCallId = null;
 
-    // Add RNCallKeep Events
-    RNCallKeep.addEventListener('didReceiveStartCallAction', this.didReceiveStartCallAction);
-    RNCallKeep.addEventListener('answerCall', this.onAnswerCallAction);
-    RNCallKeep.addEventListener('endCall', this.onEndCallAction);
-    RNCallKeep.addEventListener('didDisplayIncomingCall', this.onIncomingCallDisplayed);
-    RNCallKeep.addEventListener('didPerformSetMutedCallAction', this.onToggleMute);
-    RNCallKeep.addEventListener('didToggleHoldCallAction', this.onToggleHold);
-    RNCallKeep.addEventListener('didPerformDTMFAction', this.onDTMFAction);
-    RNCallKeep.addEventListener('didActivateAudioSession', this.audioSessionActivated);
-  }
+		// Add RNCallKeep Events
+		RNCallKeep.addEventListener(
+			'didReceiveStartCallAction',
+			this.didReceiveStartCallAction
+		);
+		RNCallKeep.addEventListener('answerCall', this.onAnswerCallAction);
+		RNCallKeep.addEventListener('endCall', this.onEndCallAction);
+		RNCallKeep.addEventListener(
+			'didDisplayIncomingCall',
+			this.onIncomingCallDisplayed
+		);
+		RNCallKeep.addEventListener('didPerformSetMutedCallAction', this.onToggleMute);
+		RNCallKeep.addEventListener('didToggleHoldCallAction', this.onToggleHold);
+		RNCallKeep.addEventListener('didPerformDTMFAction', this.onDTMFAction);
+		RNCallKeep.addEventListener(
+			'didActivateAudioSession',
+			this.audioSessionActivated
+		);
+	}
 
-  // Initialise RNCallKeep
-  setup = () => {
-    const options = {
-      ios: {
-        appName: 'ReactNativeWazoDemo',
-        imageName: 'sim_icon',
-        supportsVideo: false,
-        maximumCallGroups: '1',
-        maximumCallsPerCallGroup: '1'
-      },
-      android: {
-        alertTitle: 'Permissions Required',
-        alertDescription:
-          'This application needs to access your phone calling accounts to make calls',
-        cancelButton: 'Cancel',
-        okButton: 'ok',
-        imageName: 'sim_icon',
-        additionalPermissions: [PermissionsAndroid.PERMISSIONS.READ_CONTACTS]
-      }
-    };
+	// Initialise RNCallKeep
+	setup = () => {
+		const options = {
+			ios: {
+				appName: 'ReactNativeWazoDemo',
+				imageName: 'sim_icon',
+				supportsVideo: false,
+				maximumCallGroups: '1',
+				maximumCallsPerCallGroup: '1',
+			},
+			android: {
+				alertTitle: 'Permissions Required',
+				alertDescription:
+					'This application needs to access your phone calling accounts to make calls',
+				cancelButton: 'Cancel',
+				okButton: 'ok',
+				imageName: 'sim_icon',
+				additionalPermissions: [PermissionsAndroid.PERMISSIONS.READ_CONTACTS],
+			},
+		};
 
-    try {
-      RNCallKeep.setup(options);
-      RNCallKeep.setAvailable(true); // Only used for Android, see doc above.
-    } catch (err) {
-      console.error('initializeCallKeep error:', err.message);
-    }
-  }
+		try {
+			RNCallKeep.setup(options);
+			RNCallKeep.setAvailable(true); // Only used for Android, see doc above.
+		} catch (err) {
+			console.error('initializeCallKeep error:', err.message);
+		}
+	};
 
-  // Use startCall to ask the system to start a call - Initiate an outgoing call from this point
-  startCall = ({ handle, localizedCallerName }) => {
-    // Your normal start call action
-    RNCallKeep.startCall(this.getCurrentCallId(), handle, localizedCallerName);
-  };
+	// Use startCall to ask the system to start a call - Initiate an outgoing call from this point
+	startCall = ({ handle, localizedCallerName }) => {
+		// Your normal start call action
+		RNCallKeep.startCall(this.getCurrentCallId(), handle, localizedCallerName);
+	};
 
-  reportEndCallWithUUID = (callUUID, reason) => {
-    RNCallKeep.reportEndCallWithUUID(callUUID, reason);
-  }
+	reportEndCallWithUUID = (callUUID, reason) => {
+		RNCallKeep.reportEndCallWithUUID(callUUID, reason);
+	};
 
-  // Event Listener Callbacks
+	// Event Listener Callbacks
 
-  didReceiveStartCallAction = (data) => {
-    let { handle, callUUID, name } = data;
-    // Get this event after the system decides you can start a call
-    // You can now start a call from within your app
-  };
+	didReceiveStartCallAction = (data) => {
+		let { handle, callUUID, name } = data;
+		// Get this event after the system decides you can start a call
+		// You can now start a call from within your app
+	};
 
-  onAnswerCallAction = (data) => {
-    let { callUUID } = data;
-    // Called when the user answers an incoming call
-  };
+	onAnswerCallAction = (data) => {
+		let { callUUID } = data;
+		// Called when the user answers an incoming call
+	};
 
-  onEndCallAction = (data) => {
-    let { callUUID } = data;
-    RNCallKeep.endCall(this.getCurrentCallId());
+	onEndCallAction = (data) => {
+		let { callUUID } = data;
+		RNCallKeep.endCall(this.getCurrentCallId());
 
-    this.currentCallId = null;
-  };
+		this.currentCallId = null;
+	};
 
-  // Currently iOS only
-  onIncomingCallDisplayed = (data) => {
-    let { error } = data;
-    // You will get this event after RNCallKeep finishes showing incoming call UI
-    // You can check if there was an error while displaying
-  };
+	// Currently iOS only
+	onIncomingCallDisplayed = (data) => {
+		let { error } = data;
+		// You will get this event after RNCallKeep finishes showing incoming call UI
+		// You can check if there was an error while displaying
+	};
 
-  onToggleMute = (data) => {
-    let { muted, callUUID } = data;
-    // Called when the system or user mutes a call
-  };
+	onToggleMute = (data) => {
+		let { muted, callUUID } = data;
+		// Called when the system or user mutes a call
+	};
 
-  onToggleHold = (data) => {
-    let { hold, callUUID } = data;
-    // Called when the system or user holds a call
-  };
+	onToggleHold = (data) => {
+		let { hold, callUUID } = data;
+		// Called when the system or user holds a call
+	};
 
-  onDTMFAction = (data) => {
-    let { digits, callUUID } = data;
-    // Called when the system or user performs a DTMF action
-  };
+	onDTMFAction = (data) => {
+		let { digits, callUUID } = data;
+		// Called when the system or user performs a DTMF action
+	};
 
-  audioSessionActivated = (data) => {
-    // you might want to do following things when receiving this event:
-    // - Start playing ringback if it is an outgoing call
-  };
+	audioSessionActivated = (data) => {
+		// you might want to do following things when receiving this event:
+		// - Start playing ringback if it is an outgoing call
+	};
 
-  getCurrentCallId = () => {
-    if (!this.currentCallId) {
-      this.currentCallId = uuid.v4();
-    }
+	getCurrentCallId = () => {
+		if (!this.currentCallId) {
+			this.currentCallId = uuid.v4();
+		}
 
-    return this.currentCallId;
-  };
+		return this.currentCallId;
+	};
 
-  render() {
-  }
+	render() {}
 }
 ```
 
 ## Receiving a call when the application is not reachable.
 
 In some case your application can be unreachable :
-- when the user kill the application
-- when it's in background since a long time (eg: after ~5mn the os will kill all connections).
+
+-   when the user kill the application
+-   when it's in background since a long time (eg: after ~5mn the os will kill all connections).
 
 To be able to wake up your application to display the incoming call, you can use [https://github.com/react-native-webrtc/react-native-voip-push-notification](react-native-voip-push-notification) on iOS or BackgroundMessaging from [react-native-firebase](https://rnfirebase.io/messaging/usage#receiving-messages)-(Optional)(Android-only)-Listen-for-FCM-messages-in-the-background).
 
@@ -1089,7 +1174,8 @@ adb logcat *:S RNCallKeep:V
 ```
 
 ## Troubleshooting
-- Ensure that you construct a valid `uuid` by importing the `uuid` library and running `uuid.v4()` as shown in the examples. If you don't do this and use a custom string, the incoming call screen will never be shown on iOS.
+
+-   Ensure that you construct a valid `uuid` by importing the `uuid` library and running `uuid.v4()` as shown in the examples. If you don't do this and use a custom string, the incoming call screen will never be shown on iOS.
 
 ## Contributing
 
